@@ -1,0 +1,30 @@
+[
+	{
+		"fileName":"admin_level_2.geojson",
+		"canvasColor":[1,1,1],
+		"pointColor":[1,0,0,1],
+		"pointRadius":1,
+		"lineWidth":1,
+		"lineColor":[0,0,1,1],
+		"polyWidth":1,
+		"polyBorderColor":[0,1,0,1],
+		"polyColor":[1,0,0,1],
+		"mpolyWidth":1.25,
+		"mpolyBorderColor":[0, 0, 0, 1],
+		"mpolyColor":[1, 1, 0 ,1]
+	},
+	{
+		"fileName":"admin_level_4.geojson",
+		"canvasColor":[1,1,1],
+		"pointColor":[1,0,0,1],
+		"pointRadius":0.5,
+		"lineWidth":0.5,
+		"lineColor":[0,0,1,1],
+		"polyWidth":0.5,
+		"polyBorderColor":[0,1,0,1],
+		"polyColor":[1,0,0,1],
+		"mpolyWidth":0.25,
+		"mpolyBorderColor":[0, 0, 0, 1],
+		"mpolyColor":[1, 0, 0, 0.5]
+	}
+]
