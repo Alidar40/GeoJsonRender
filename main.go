@@ -33,7 +33,7 @@ type StyleType struct {
 	MPolyColor	[4]float64	`json:"mpolyColor"`
 }
 
-const MercatorMaxValue float64 = 20037508.342789
+const MercatorMaxValue float64 = 20037508.342789244
 var Styles = make(map[string]StyleType)
 
 func main() {
@@ -55,8 +55,8 @@ func main() {
 		return
 	}
 
-	var MercatorToCanvasScaleFactorX =  float64(config.CanvasWidth) / (2 * MercatorMaxValue)
-	var MercatorToCanvasScaleFactorY =  float64(config.CanvasHeight) / (2 * MercatorMaxValue)
+	var MercatorToCanvasScaleFactorX =  float64(config.CanvasWidth) / (MercatorMaxValue)
+	var MercatorToCanvasScaleFactorY =  float64(config.CanvasHeight) / (MercatorMaxValue)
 	fmt.Println(MercatorToCanvasScaleFactorX, " ", MercatorToCanvasScaleFactorY)
 	dc := gg.NewContext(config.CanvasWidth, config.CanvasHeight)
 	dc.InvertY()
@@ -114,20 +114,9 @@ func main() {
 			case "MultiPolygon":
 				for _, mpolys := range feature.Geometry.MultiPolygon {
 					for _, mpoly := range mpolys {
-						dc.SetLineWidth(Styles[name].MPolyWidth)
 						for _, mpoint := range mpoly {
 							x, y := mercator.LatLonToMeters(mpoint[1], mpoint[0])
-							if (x > 0) {
-								x += MercatorMaxValue
-							} else {
-								x = MercatorMaxValue + x
-							}
-
-							if (y > 0) {
-								y += MercatorMaxValue
-							} else {
-								y = MercatorMaxValue + y
-							}
+							x, y = centerRussia(x,y)
 
 							x *= MercatorToCanvasScaleFactorX
 							y *= MercatorToCanvasScaleFactorY
@@ -135,6 +124,7 @@ func main() {
 							dc.LineTo(x, y)
 						}
 						dc.ClosePath()
+						dc.SetLineWidth(Styles[name].MPolyWidth)
 						dc.SetRGBA(Styles[name].MPolyBorderColor[0], Styles[name].MPolyBorderColor[1], Styles[name].MPolyBorderColor[2], Styles[name].MPolyBorderColor[3])
 						dc.StrokePreserve()
 						dc.SetRGBA(Styles[name].MPolyColor[0], Styles[name].MPolyColor[1], Styles[name].MPolyColor[2], Styles[name].MPolyColor[3])
@@ -145,6 +135,7 @@ func main() {
 			}
 		}
 	}
+
 	dc.SavePNG("out.png")
 	return
 }
@@ -207,4 +198,16 @@ func readData(path string) (map[string]*geojson.FeatureCollection, error) {
 	}
 
 	return data, err
+}
+
+func centerRussia(x float64, y float64) (float64, float64) {
+	var west float64 = 1635093.15883866
+
+	if (x > 0) {
+		x -= west
+	} else {
+		x += 2*MercatorMaxValue - west
+	}
+
+	return x, y
 }
